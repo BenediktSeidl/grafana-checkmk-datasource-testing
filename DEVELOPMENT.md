@@ -45,4 +45,9 @@ yarn upgrade --latest
 
 ## Release
 
-TBD
+* create pull request:
+  * adapt version in package.json to `X.Y.Z`
+  * add section in CHANGELOG.md: `## X.Y.Z`
+* merge pull request into main branch
+* tag commit in the main branch with `vX.Y.Z`
+* save release draft on github
