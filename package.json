@@ -19,7 +19,9 @@
     "@grafana/ui": "^8.5.4",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "^12.1.5",
-    "@types/lodash": "4.14.182"
+    "@types/lodash": "4.14.182",
+    "eslint": "^8.19.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.6"
   },
   "engines": {
     "node": ">=14"
