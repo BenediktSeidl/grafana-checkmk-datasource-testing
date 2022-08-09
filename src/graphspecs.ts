@@ -1,8 +1,26 @@
 import { get } from 'lodash';
-import { Context, MyQuery } from './types';
-export const buildRequestBody = (data: any) => `request=${JSON.stringify(data)}`;
+import { ContextHTTPVars, Context, MyQuery, Presentation } from './types';
+export const buildRequestBody = (data: unknown): string => `request=${JSON.stringify(data)}`;
 
-type GraphSpec = [string, any];
+interface CombinedGraphSpec {
+  graph_template: string;
+  presentation: Presentation;
+  context: Context;
+  datasource: string;
+  single_infos: string[];
+}
+
+interface TemplateGraphSpec {
+  graph_id: string;
+}
+
+interface SingleInfos {
+  site: string | ContextHTTPVars;
+  host_name: string | ContextHTTPVars;
+  service_description: string | ContextHTTPVars;
+}
+
+type GraphSpec = ['template', TemplateGraphSpec] | ['combined', CombinedGraphSpec];
 
 export function graphDefinitionRequest(editionMode: string, query: MyQuery, range: number[]): string {
   return buildRequestBody({
@@ -22,7 +40,7 @@ function graphSpecification(editionMode: string, query: MyQuery): GraphSpec {
   throw new Error('UNSUPORTED EDITION');
 }
 
-export function extractSingleInfos(context: Context) {
+export function extractSingleInfos(context: Context): SingleInfos {
   return {
     site: get(context, 'siteopt.site', ''),
     host_name: get(context, 'host.host', ''),
@@ -31,7 +49,7 @@ export function extractSingleInfos(context: Context) {
 }
 
 function graphTemplateSpecification({ params, context }: MyQuery): GraphSpec {
-  let graph_name = (params.graphMode === 'metric' ? 'METRIC_' : '') + params.graph_name;
+  const graph_name = (params.graphMode === 'metric' ? 'METRIC_' : '') + params.graph_name;
   return [
     'template',
     {
@@ -41,7 +59,7 @@ function graphTemplateSpecification({ params, context }: MyQuery): GraphSpec {
   ];
 }
 
-export function combinedDesc(context: Context) {
+export function combinedDesc(context: Context): Omit<CombinedGraphSpec, 'graph_template' | 'presentation'> {
   return {
     context: context,
     datasource: 'services',
@@ -50,7 +68,10 @@ export function combinedDesc(context: Context) {
 }
 
 function combinedGraphSpecification({ params, context }: MyQuery): GraphSpec {
-  let graph_name = (params.graphMode === 'metric' ? 'METRIC_' : '') + params.graph_name;
+  const graph_name = (params.graphMode === 'metric' ? 'METRIC_' : '') + params.graph_name;
+  if (params.presentation == null) {
+    throw new Error('params.presentation has to be not null');
+  }
   return [
     'combined',
     { ...combinedDesc(context || {}), graph_template: graph_name, presentation: params.presentation },

@@ -13,8 +13,9 @@ import {
   SiteFilter,
   HostTagsFilter,
 } from './filters';
+import { Presentation } from 'types';
 
-export const SelectAggregation = (props: EditorProps) => {
+export const SelectAggregation = (props: EditorProps): JSX.Element => {
   const combined_presentations = [
     { value: 'lines', label: 'Lines' },
     // { value: 'stacked', label: 'Stacked' }, // no difference to line at request level
@@ -26,7 +27,7 @@ export const SelectAggregation = (props: EditorProps) => {
 
   const onPresentationChange = async ({ value }: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = props;
-    onChange({ ...query, params: { ...query.params, presentation: value } });
+    onChange({ ...query, params: { ...query.params, presentation: value as Presentation } });
     onRunQuery();
   };
 
@@ -43,7 +44,7 @@ export const SelectAggregation = (props: EditorProps) => {
   );
 };
 
-export const FilterEditor = (props: EditorProps) => {
+export const FilterEditor = (props: EditorProps): JSX.Element => {
   const context = props.query.context || {};
   return (
     <>
@@ -59,7 +60,7 @@ interface FilterEditorProps extends EditorProps {
   filtername: string;
 }
 
-export const SelectFilters = (props: FilterEditorProps) => {
+export const SelectFilters = (props: FilterEditorProps): null | JSX.Element => {
   const all_filters = [
     { value: 'siteopt', label: 'Site', render: SiteFilter },
     { value: 'host', label: 'Hostname', render: HostFilter },
@@ -73,7 +74,7 @@ export const SelectFilters = (props: FilterEditorProps) => {
   ];
   const context = props.query.context || {};
   const available_filters = all_filters.filter(
-    ({ value }) => value === props.filtername || !context.hasOwnProperty(value)
+    ({ value }) => value === props.filtername || !Object.prototype.hasOwnProperty.call(context, value)
   );
   // Early return in case all filters are on
   if (!available_filters.length) {

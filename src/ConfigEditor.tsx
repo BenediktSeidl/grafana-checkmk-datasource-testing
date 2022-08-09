@@ -5,12 +5,14 @@ import { MyDataSourceOptions, MySecureJsonData, Edition } from './types';
 
 const { SecretFormField, FormField } = LegacyForms;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props extends DataSourcePluginOptionsEditorProps<MyDataSourceOptions, MySecureJsonData> {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface State {}
 
 export class ConfigEditor extends PureComponent<Props, State> {
-  onUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+  onUrlChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const { onOptionsChange, options } = this.props;
     const jsonData = {
       ...options.jsonData,
@@ -19,7 +21,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
     onOptionsChange({ ...options, jsonData });
   };
 
-  onEditionChange = ({ value }: SelectableValue<Edition>) => {
+  onEditionChange = ({ value }: SelectableValue<Edition>): void => {
     const { onOptionsChange, options } = this.props;
     const jsonData = {
       ...options.jsonData,
@@ -28,7 +30,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
     onOptionsChange({ ...options, jsonData });
   };
 
-  onUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
+  onUsernameChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const { onOptionsChange, options } = this.props;
     const jsonData = {
       ...options.jsonData,
@@ -38,7 +40,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
   };
 
   // Secure field (only sent to the backend)
-  onSecretChange = (event: ChangeEvent<HTMLInputElement>) => {
+  onSecretChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const { onOptionsChange, options } = this.props;
     onOptionsChange({
       ...options,
@@ -48,7 +50,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
     });
   };
 
-  onResetSecret = () => {
+  onResetSecret = (): void => {
     const { onOptionsChange, options } = this.props;
     onOptionsChange({
       ...options,
@@ -63,7 +65,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
     });
   };
 
-  render() {
+  render(): JSX.Element {
     const { options } = this.props;
     const { jsonData, secureJsonFields } = options;
     const secureJsonData = options.secureJsonData || {};

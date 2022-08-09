@@ -1,16 +1,22 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
-interface ContextHTTPVars {
-  [key: string]: string;
-}
-export interface Context {
-  [key: string]: ContextHTTPVars;
+export type ContextHTTPVars = Record<string, string>;
+
+export type Context = Record<string, ContextHTTPVars>;
+
+export type Presentation = 'lines' | 'sum' | 'average' | 'min' | 'max';
+
+export interface QueryParams {
+  graphMode?: 'metric' | 'template';
+  presentation?: Presentation;
+  graph_name?: string;
+  action?: 'get_graph' | 'get_combined_graph_identifications';
 }
 
 export interface MyQuery extends DataQuery {
-  params: any;
+  params: QueryParams;
   context: Context;
-  data?: any;
+  data?: string;
 }
 
 export const defaultQuery: Partial<MyQuery> = {
@@ -36,4 +42,30 @@ export interface MyDataSourceOptions extends DataSourceJsonData {
  */
 export interface MySecureJsonData {
   secret?: string;
+}
+
+export interface ResponseDataAutocomplete {
+  choices: Array<[string, string]>;
+}
+
+export type ResponseDataAutocompleteLabel = Array<{
+  value: string;
+}>;
+
+export interface ResponseDataCurves {
+  filter: unknown;
+  start_time: number;
+  step: number;
+  curves: Array<{
+    title: string;
+    rrddata: Array<{
+      i: number;
+      d: Record<string, unknown>;
+    }>;
+  }>;
+}
+
+export interface ResponseData<T> {
+  result_code: number;
+  result: T;
 }

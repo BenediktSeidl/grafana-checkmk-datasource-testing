@@ -1,30 +1,33 @@
 import React from 'react';
 import { AsyncSelect, InlineField, Select } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
-import { AutoCompleteEditorProps, EditorProps } from './types';
+import { AutoCompleteEditorProps, AutoCompleteConfig, EditorProps } from './types';
 import { get, update as _update, cloneDeep } from 'lodash';
 import { DataSource } from '../DataSource';
 import { combinedDesc } from 'graphspecs';
+import { MyQuery, ResponseDataAutocomplete } from 'types';
 
-const update = (x: any, path: string, func: any) => {
-  let copy = cloneDeep(x);
+const update = (x: MyQuery, path: string, func: () => SelectableValue<string> | string | undefined) => {
+  const copy = cloneDeep(x);
   _update(copy, path, func);
   return copy;
 };
 
-export const vsAutocomplete = (datasource: DataSource, autocompleteConfig: any) => (inputValue: string) =>
-  datasource
-    .restRequest('ajax_vs_autocomplete.py', {
-      ...autocompleteConfig,
-      value: inputValue.trim(),
-    })
-    .then((result) =>
-      result.data.result.choices.map(([value, label]: [string, string]) => ({
-        value,
-        label,
-        isDisabled: value === null,
-      }))
-    );
+export const vsAutocomplete =
+  (datasource: DataSource, autocompleteConfig: AutoCompleteConfig) =>
+  (inputValue: string): Promise<Array<{ value: string; label: string; isDisabled: boolean }>> =>
+    datasource
+      .restRequest<ResponseDataAutocomplete>('ajax_vs_autocomplete.py', {
+        ...autocompleteConfig,
+        value: inputValue.trim(),
+      })
+      .then((result) =>
+        result?.data.result.choices.map(([value, label]: [string, string]) => ({
+          value,
+          label,
+          isDisabled: value === null,
+        }))
+      );
 
 export const AsyncAutocomplete = ({
   autocompleter,
@@ -32,7 +35,7 @@ export const AsyncAutocomplete = ({
   onRunQuery,
   query,
   contextPath,
-}: AutoCompleteEditorProps) => {
+}: AutoCompleteEditorProps): JSX.Element => {
   const onSelection = (value: SelectableValue<string>) => {
     let newQuery = update(query, contextPath, () => value.value);
     newQuery = update(newQuery, 'params.selections.' + contextPath, () => value);
@@ -59,9 +62,9 @@ export const AsyncAutocomplete = ({
   );
 };
 
-export const titleCase = (str: string) => str[0].toUpperCase() + str.slice(1).toLowerCase();
+export const titleCase = (str: string): string => str[0].toUpperCase() + str.slice(1).toLowerCase();
 
-export const GraphType = ({ query, onChange, onRunQuery, contextPath }: AutoCompleteEditorProps) => {
+export const GraphType = ({ query, onChange, onRunQuery, contextPath }: AutoCompleteEditorProps): JSX.Element => {
   const graphTypes = [
     { value: 'template', label: 'Template' },
     { value: 'metric', label: 'Single metric' },
@@ -83,9 +86,9 @@ export const GraphType = ({ query, onChange, onRunQuery, contextPath }: AutoComp
   );
 };
 
-export const GraphSelect = (props: EditorProps) => {
+export const GraphSelect = (props: EditorProps): JSX.Element => {
   const graphMode = get(props, 'query.params.graphMode', 'template');
-  let completionVS = {};
+  let completionVS;
   if (props.edition === 'CEE') {
     completionVS = {
       ident: 'combined_graphs',
@@ -107,6 +110,8 @@ export const GraphSelect = (props: EditorProps) => {
         context: get(props, 'query.context', {}),
       },
     };
+  } else {
+    throw new Error('props.edition has undefined value'); // should never happen
   }
 
   const label = titleCase(graphMode);
@@ -123,7 +128,7 @@ export const GraphSelect = (props: EditorProps) => {
 
   return (
     <>
-      <GraphType contextPath="params.graphMode" {...props} autocompleter={(_) => new Promise(() => ({}))} />
+      <GraphType contextPath="params.graphMode" {...props} autocompleter={() => new Promise(() => ({}))} />
       <InlineField labelWidth={14} label={label}>
         <AsyncAutocomplete autocompleter={autocompleter_wrap} contextPath={'params.graph_name'} {...props} />
       </InlineField>
