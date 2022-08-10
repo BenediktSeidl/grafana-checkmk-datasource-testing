@@ -45,10 +45,10 @@ yarn upgrade --latest
 
 ## Release
 
-* (on master branch)
-* yarn build
-* git commit -m "release VVV"
-* git tag VVV
-* git push
-* git push --tags
-* github -> releases -> draft new release
+* create pull request:
+  * adapt version in package.json to `X.Y.Z`
+  * add section in CHANGELOG.md
+* merge pull request into main branch
+* tag commit in the main branch with `vX.Y.Z`
+* save release draft on github
+* done

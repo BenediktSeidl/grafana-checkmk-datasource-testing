@@ -2,6 +2,10 @@
 
 [//]: # (The ci will use the first section starting with `##` as release notes.)
 
+## 99.0.1
+
+This is another test-release
+
 ## 2.0.0b4
 
 Checkmk's Grafana connector underwent a complete rewrite. This plugin release

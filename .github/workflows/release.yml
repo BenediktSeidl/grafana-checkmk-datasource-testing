@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "*.*.*"
+      - "v*.*.*"
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
           echo "::set-output name=path::release_notes.md"
 
       - name: Check package version
-        run: if [ "${{ steps.metadata.outputs.plugin-version }}" != "${{ steps.metadata.outputs.github-tag }}" ]; then printf "\033[0;31mPlugin version doesn't match tag name\033[0m\n"; exit 1; fi
+        run: if [ "v${{ steps.metadata.outputs.plugin-version }}" != "${{ steps.metadata.outputs.github-tag }}" ]; then printf "\033[0;31mPlugin version doesn't match tag name\033[0m\n"; exit 1; fi
 
       - name: Package plugin
         id: package-plugin
@@ -58,7 +58,7 @@ jobs:
           md5sum ${{ steps.metadata.outputs.archive }} > ${{ steps.metadata.outputs.archive-checksum }}
           echo "::set-output name=checksum::$(cat ./${{ steps.metadata.outputs.archive-checksum }} | cut -d' ' -f1)"
 
-# # does not work with unsigned plugins!
+# does not work with unsigned plugins!
 #      - name: Lint plugin
 #        run: |
 #          git clone https://github.com/grafana/plugin-validator
