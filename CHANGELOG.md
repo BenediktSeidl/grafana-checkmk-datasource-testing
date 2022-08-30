@@ -2,6 +2,10 @@
 
 [//]: # (The ci will use the first section starting with `##` as release notes.)
 
+## 9.9.99
+
+* Test release to check what happens if we change the plugin name
+
 ## NEXT
 
 * Removed `/dist` folder from git repository. That means that it's no longer
