@@ -11,6 +11,40 @@
 
 [1]: https://docs.checkmk.com/2.1.0/en/grafana.html
 
+* Renamed the plugin from `tribe-29-checkmk-datasource` to
+  `tribe29-checkmk-datasource`. As this affects the internal plugin-id you will
+  have to adapt your dashboards and you grafana configuration:
+
+  * First you have to whitelist the new plugin name to be accepted as unsigned
+    plugin. See the [official documentation.][docs]
+  * If you have access to `/var/lib/grafana/grafana.db` you may use the update
+    script provided in `utils/rename_plugin.py`.
+
+    1. Please make a backup of this file
+    2. Stop grafana
+    3. Execute script with at least python 3.8:
+       `python3 rename_plugin.py grafana.db`
+    4. Start grafana
+    5. Check your dashboards, report any problems you may encounter.
+
+  * If you have no access to said file, you may install the new datasource
+    plugin in parallel to the old one and manually adapt the json model of your
+    dashboards: you will have to adapt the following blocks:
+    ```json
+    "datasource": {
+      "type": "tribe-29-checkmk-datasource",
+      "uid": "FakSVlW4z"
+    },
+    ```
+
+    1. remove the dash between `tribe` and `29`
+    2. adapt the uid to point to the new data source you created.
+
+    The block occures multiple times per dashboard and panel, so you have to
+    replace it multiple times.
+
+[docs]: https://docs.checkmk.com/latest/en/grafana.html#allow_unsigned
+
 ## 2.0.1
 
 * README.md already states that at least Grafana 8.0.0 is required, now the
