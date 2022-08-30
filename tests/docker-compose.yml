@@ -11,7 +11,7 @@ services:
       GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: 'false'
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: password
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: tribe-29-checkmk-datasource
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: tribe29-checkmk-datasource
     ports:
       - '3000:3000'
     depends_on:
