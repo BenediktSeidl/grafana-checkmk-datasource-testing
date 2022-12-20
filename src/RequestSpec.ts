@@ -3,19 +3,24 @@ interface NegatableOption {
   negated: boolean;
 }
 
-interface FullRequestSpec {
-  host_name: string;
+export interface FullRequestSpec {
+  graph_type: string;
+
+  aggregation: string;
+
+  site: string; // done
+
+  host_name?: string;
   host_name_regex: NegatableOption;
-  site: string;
-  service: string;
-  service_regex: NegatableOption;
   host_in_group: NegatableOption;
   host_labels: string[];
-  service_in_group: NegatableOption;
   host_tags: [TagValue, TagValue, TagValue];
-  aggregation: string;
-  graph_type: string;
-  graph: string;
+
+  service: string | undefined;
+  service_regex: NegatableOption;
+  service_in_group: NegatableOption;
+
+  graph?: string;
 }
 
 export interface TagValue {
