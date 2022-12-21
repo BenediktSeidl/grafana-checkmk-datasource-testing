@@ -8,17 +8,17 @@ export interface FullRequestSpec {
 
   aggregation: string;
 
-  site: string; // done
+  site?: string;
 
   host_name?: string;
-  host_name_regex: NegatableOption;
-  host_in_group: NegatableOption;
-  host_labels: string[];
-  host_tags: [TagValue, TagValue, TagValue];
+  host_name_regex: NegatableOption | undefined;
+  host_in_group: NegatableOption | undefined;
+  host_labels: string[] | undefined;
+  host_tags: [TagValue, TagValue, TagValue] | undefined;
 
   service: string | undefined;
-  service_regex: NegatableOption;
-  service_in_group: NegatableOption;
+  service_regex?: NegatableOption | undefined;
+  service_in_group: NegatableOption | undefined;
 
   graph?: string;
 }
