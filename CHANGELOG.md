@@ -2,9 +2,16 @@
 
 [//]: # 'The ci will use the first section starting with `##` as release notes.'
 
+## 99.99.99
+
+- some
+- list
+- and *mark* down
+- or other stuff
+
 ## 3.3.0
 - Support for new autocomplete endpoints
-- Rebranding of Checkmk commercial products 
+- Rebranding of Checkmk commercial products
 
 
 ## 3.2.2
